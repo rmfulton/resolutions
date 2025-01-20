@@ -37,14 +37,25 @@
         const sheetID = '2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs';
         const sheetURL = `https://opensheet.elk.sh/${sheetID}/Sheet1`;  // Public Google Sheet
 
+        // Fallback fake data
+        const fakeData = [
+            { Date: '2025-01-10', time_seconds: 320 },
+            { Date: '2025-01-11', time_seconds: 330 },
+            { Date: '2025-01-12', time_seconds: 310 },
+            { Date: '2025-01-13', time_seconds: 290 },
+            { Date: '2025-01-14', time_seconds: 305 }
+        ];
+
         fetch(sheetURL)
             .then(response => response.json())
             .then(data => {
-                // Parse the data and ignore the first row (header)
                 const dates = [];
                 const times = [];
 
-                data.slice(1).forEach(row => {
+                // Use the fetched data or fall back to fake data if it fails
+                const dataset = data.length > 0 ? data.slice(1) : fakeData;
+                
+                dataset.forEach(row => {
                     dates.push(row.Date);
                     times.push(parseInt(row.time_seconds, 10));
                 });
@@ -52,7 +63,7 @@
                 // Create the chart
                 const ctx = document.getElementById('mileChart').getContext('2d');
                 const mileChart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'line',
                     data: {
                         labels: dates, // Dates as labels
                         datasets: [
@@ -106,7 +117,69 @@
                     }
                 });
             })
-            .catch(error => console.error('Error fetching the data: ', error));
+            .catch(error => {
+                console.error('Error fetching the data: ', error);
+                // If fetch fails, use fake data
+                const dates = fakeData.map(row => row.Date);
+                const times = fakeData.map(row => parseInt(row.time_seconds, 10));
+
+                // Create the chart with fake data
+                const ctx = document.getElementById('mileChart').getContext('2d');
+                const mileChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates,
+                        datasets: [
+                            {
+                                label: 'Mile Time (Seconds)',
+                                data: times,
+                                backgroundColor: 'rgba(0, 123, 255, 0.7)', // Blue bars
+                                borderColor: 'rgba(0, 123, 255, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Target Goal (300s)',
+                                data: Array(dates.length).fill(300), // Gold line at 300s
+                                backgroundColor: 'rgba(255, 215, 0, 0.5)', // Gold color
+                                borderColor: 'rgba(255, 215, 0, 1)',
+                                borderWidth: 2,
+                                type: 'line',
+                                fill: false,
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#fff'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    }
+                });
+            });
     </script>
 </body>
 </html>
