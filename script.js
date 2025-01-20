@@ -1,14 +1,13 @@
-// Google Sheets CSV link
-const sheetID = "2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs";
-const sheetURL = `https://docs.google.com/spreadsheets/d/e/${sheetID}/pub?output=csv`;
+// Google Sheets CSV link for Mile Times
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs/pub?output=csv';
 
-// Fallback fake data
+// Fallback fake data for Mile Times
 const fakeData = [
-    { Date: '2025-01-10', time_seconds: 375 },
-    { Date: '2025-01-11', time_seconds: 340 },
-    { Date: '2025-01-12', time_seconds: 305 },
-    { Date: '2025-01-13', time_seconds: 270 },
-    { Date: '2025-01-14', time_seconds: 235 }
+    { Date: '2025-01-10', time_seconds: 320 },
+    { Date: '2025-01-11', time_seconds: 330 },
+    { Date: '2025-01-12', time_seconds: 310 },
+    { Date: '2025-01-13', time_seconds: 290 },
+    { Date: '2025-01-14', time_seconds: 305 }
 ];
 
 // Fetch the CSV file using PapaParse
@@ -18,15 +17,13 @@ Papa.parse(sheetURL, {
     skipEmptyLines: true,
     dynamicTyping: true,
     complete: function(results) {
-        // If no data in the CSV, fall back to fake data
         const data = results.data.length > 0 ? results.data : fakeData;
         
         const dates = [];
         const times = [];
 
-        // Loop through the data and extract the relevant columns
+        // Extract dates and times from the data
         data.forEach(row => {
-            // Adjusting the column name to match the CSV format
             dates.push(row.Date);
             times.push(row['Time (seconds)']);
         });
@@ -45,7 +42,7 @@ Papa.parse(sheetURL, {
                         borderColor: 'rgba(0, 123, 255, 1)', // Blue line border
                         borderWidth: 2,
                         fill: false, // Do not fill below the line
-                        tension: 0.1 // Line smoothing (optional)
+                        tension: 0.1 // Line smoothing
                     },
                     {
                         label: 'Target Goal (300s)',
@@ -55,7 +52,7 @@ Papa.parse(sheetURL, {
                         borderWidth: 2,
                         fill: false, // Do not fill below the line
                         pointRadius: 0, // Remove points on the target line
-                        tension: 0.1 // Line smoothing (optional)
+                        tension: 0.1 // Line smoothing
                     }
                 ]
             },
@@ -92,7 +89,7 @@ Papa.parse(sheetURL, {
     },
     error: function(error) {
         console.error('Error fetching the CSV: ', error);
-        // If fetch fails, use fake data
+        // Use fake data if fetch fails
         const dates = fakeData.map(row => row.Date);
         const times = fakeData.map(row => row.time_seconds);
 
@@ -110,7 +107,7 @@ Papa.parse(sheetURL, {
                         borderColor: 'rgba(0, 123, 255, 1)', // Blue line border
                         borderWidth: 2,
                         fill: false, // Do not fill below the line
-                        tension: 0.1 // Line smoothing (optional)
+                        tension: 0.1 // Line smoothing
                     },
                     {
                         label: 'Target Goal (300s)',
@@ -120,7 +117,7 @@ Papa.parse(sheetURL, {
                         borderWidth: 2,
                         fill: false, // Do not fill below the line
                         pointRadius: 0, // Remove points on the target line
-                        tension: 0.1 // Line smoothing (optional)
+                        tension: 0.1 // Line smoothing
                     }
                 ]
             },
