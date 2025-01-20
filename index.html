@@ -5,120 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mile Time Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    /* Global variables for color themes */
-    :root {
-      --bg-light: #f4f4f4;
-      --bg-dark: #2c2c2c;
-      --text-light: #333;
-      --text-dark: #fff;
-      --primary-light: #007bff;
-      --primary-dark: #1e90ff;
-      --chart-border-light: blue;
-      --chart-border-dark: lightblue;
-      --chart-bg-light: #ffffff;
-      --chart-bg-dark: #444;
-    }
-
-    /* Light theme */
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-light);
-      color: var(--text-light);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    /* Dark theme */
-    body.dark-mode {
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
-    }
-
-    /* Main container */
-    .container {
-      background-color: white;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      width: 80%;
-      max-width: 900px;
-      text-align: center;
-      transition: background-color 0.3s;
-    }
-
-    .container.dark-mode {
-      background-color: #444;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      color: var(--text-light);
-      margin-bottom: 20px;
-      transition: color 0.3s;
-    }
-
-    .container.dark-mode h1 {
-      color: var(--text-dark);
-    }
-
-    canvas {
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Toggle button styling */
-    .toggle-button {
-      padding: 10px 20px;
-      background-color: var(--primary-light);
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      color: white;
-      font-size: 1rem;
-      margin-top: 20px;
-      transition: background-color 0.3s;
-    }
-
-    .toggle-button:hover {
-      background-color: var(--primary-dark);
-    }
-
-    /* Dark mode toggle button */
-    body.dark-mode .toggle-button {
-      background-color: var(--primary-dark);
-    }
-
-    /* Chart styling */
-    .chart-container {
-      margin-top: 20px;
-    }
-
-    /* Add responsive design */
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .container {
-        padding: 15px;
-      }
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Mile Time Tracker</h1>
-    <div class="chart-container">
-      <canvas id="mileChart" width="400" height="200"></canvas>
-    </div>
-    <button class="toggle-button" id="toggleButton">Toggle Dark Mode</button>
-  </div>
+  <h1>Mile Time Tracker</h1>
+  <canvas id="mileChart" width="400" height="200"></canvas>
 
   <script>
     // Public Google Sheets CSV URL
@@ -144,22 +34,14 @@
       const labels = mileData.map(d => d.date);
       const times = mileData.map(d => d.time);
 
-      const isDarkMode = document.body.classList.contains('dark-mode');
-      const chartBgColor = isDarkMode ? 'var(--chart-bg-dark)' : 'var(--chart-bg-light)';
-      const textColor = isDarkMode ? 'var(--text-dark)' : 'var(--text-light)';
-      const borderColor = isDarkMode ? 'lightblue' : 'blue';
-      const targetLineColor = isDarkMode ? 'red' : 'red'; // Target line color remains red
-
-      const ctx = document.getElementById('mileChart').getContext('2d');
-
-      new Chart(ctx, {
+      new Chart(document.getElementById('mileChart'), {
         type: 'line',
         data: {
           labels: labels,
           datasets: [{
             label: 'Mile Time (seconds)',
             data: times,
-            borderColor: borderColor,
+            borderColor: 'blue',
             fill: false
           }]
         },
@@ -168,76 +50,26 @@
           plugins: {
             legend: {
               display: true,
-              position: 'top',
-              labels: {
-                color: textColor
-              }
+              position: 'top'
             }
           },
           scales: {
             x: {
               title: {
                 display: true,
-                text: 'Date',
-                color: textColor
-              },
-              grid: {
-                color: isDarkMode ? '#555' : '#ccc'
+                text: 'Date'
               }
             },
             y: {
               title: {
                 display: true,
-                text: 'Time (seconds)',
-                color: textColor
-              },
-              grid: {
-                color: isDarkMode ? '#555' : '#ccc'
-              },
-              suggestedMin: 0,
-              suggestedMax: 350
-            }
-          },
-          // Add a horizontal line at 300 seconds (target line for 5-minute mile)
-          annotation: {
-            annotations: [
-              {
-                type: 'line',
-                mode: 'horizontal',
-                scaleID: 'y',
-                value: 300, // 300 seconds represents the 5-minute mile target
-                borderColor: targetLineColor,
-                borderWidth: 2,
-                label: {
-                  enabled: true,
-                  content: 'Goal: 5-minute Mile',
-                  position: 'right',
-                  font: {
-                    weight: 'bold'
-                  },
-                  color: targetLineColor
-                }
+                text: 'Time (seconds)'
               }
-            ]
-          },
-          layout: {
-            padding: 20
-          },
-          backgroundColor: chartBgColor
+            }
+          }
         }
       });
     }
-
-    // Toggle dark mode
-    const toggleButton = document.getElementById('toggleButton');
-    toggleButton.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-      const isDarkMode = document.body.classList.contains('dark-mode');
-      toggleButton.textContent = isDarkMode ? 'Toggle Light Mode' : 'Toggle Dark Mode';
-      
-      // Re-render chart with updated theme
-      renderChart().catch(error => console.error('Error rendering chart:', error));
-    });
 
     // Initialize the chart rendering
     renderChart().catch(error => console.error('Error rendering chart:', error));
