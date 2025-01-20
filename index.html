@@ -172,8 +172,32 @@
               title: {
                 display: true,
                 text: 'Time (seconds)'
-              }
+              },
+              suggestedMin: 0,
+              suggestedMax: 350
             }
+          },
+          // Add a horizontal line at 300 seconds (target line for 5-minute mile)
+          annotation: {
+            annotations: [
+              {
+                type: 'line',
+                mode: 'horizontal',
+                scaleID: 'y',
+                value: 300, // 300 seconds represents the 5-minute mile target
+                borderColor: 'red',
+                borderWidth: 2,
+                label: {
+                  enabled: true,
+                  content: 'Goal: 5-minute Mile',
+                  position: 'right',
+                  font: {
+                    weight: 'bold'
+                  },
+                  color: 'red'
+                }
+              }
+            ]
           }
         }
       });
