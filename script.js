@@ -1,13 +1,14 @@
 // Google Sheets CSV link
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs/pub?output=csv';
+const sheetID = "2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs";
+const sheetURL = `https://docs.google.com/spreadsheets/d/e/${sheetID}/pub?output=csv`;
 
 // Fallback fake data
 const fakeData = [
-    { Date: '2025-01-10', time_seconds: 320 },
-    { Date: '2025-01-11', time_seconds: 330 },
-    { Date: '2025-01-12', time_seconds: 310 },
-    { Date: '2025-01-13', time_seconds: 290 },
-    { Date: '2025-01-14', time_seconds: 305 }
+    { Date: '2025-01-10', time_seconds: 375 },
+    { Date: '2025-01-11', time_seconds: 340 },
+    { Date: '2025-01-12', time_seconds: 305 },
+    { Date: '2025-01-13', time_seconds: 270 },
+    { Date: '2025-01-14', time_seconds: 235 }
 ];
 
 // Fetch the CSV file using PapaParse
