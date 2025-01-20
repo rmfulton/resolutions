@@ -1,78 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mile Time Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mile Time Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        canvas {
+            margin: 0 auto;
+            display: block;
+        }
+        .container {
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Mile Time Tracker</h1>
-  <canvas id="mileChart" width="400" height="200"></canvas>
+    <div class="container">
+        <h1>Mile Time Tracker</h1>
+        <canvas id="mileChart" width="800" height="400"></canvas>
+    </div>
 
-  <script>
-    // Public Google Sheets CSV URL
-    const sheetId = "2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs"
-    const sheetURL = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv`; // Replace with your published sheet URL
+    <script>
+        // Google Sheets URL (API endpoint)
+        const sheetID = '2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs';
+        const sheetURL = `https://opensheet.elk.sh/${sheetID}/Sheet1`;  // Public Google Sheet
 
-    // Fetch data from the public Google Sheet
-    async function fetchMileData() {
-      const response = await fetch(sheetURL);
-      const data = await response.text();
-      const rows = data.split('\n').slice(1); // Skip the header row
+        fetch(sheetURL)
+            .then(response => response.json())
+            .then(data => {
+                // Parse the data and ignore the first row (header)
+                const dates = [];
+                const times = [];
 
-      return rows.map(row => {
-        const [date, time] = row.split(',');
-        return { date: date.trim(), time: parseFloat(time.trim()) };
-      });
-    }
+                data.slice(1).forEach(row => {
+                    dates.push(row.Date);
+                    times.push(parseInt(row.time_seconds, 10));
+                });
 
-    // Render the chart
-    async function renderChart() {
-      const mileData = await fetchMileData();
-
-      const labels = mileData.map(d => d.date);
-      const times = mileData.map(d => d.time);
-
-      new Chart(document.getElementById('mileChart'), {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Mile Time (seconds)',
-            data: times,
-            borderColor: 'blue',
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top'
-            }
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: 'Date'
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: 'Time (seconds)'
-              }
-            }
-          }
-        }
-      });
-    }
-
-    // Initialize the chart rendering
-    renderChart().catch(error => console.error('Error rendering chart:', error));
-  </script>
+                // Create the chart
+                const ctx = document.getElementById('mileChart').getContext('2d');
+                const mileChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dates, // Dates as labels
+                        datasets: [
+                            {
+                                label: 'Mile Time (Seconds)',
+                                data: times,
+                                backgroundColor: 'rgba(0, 123, 255, 0.7)', // Blue bars
+                                borderColor: 'rgba(0, 123, 255, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Target Goal (300s)',
+                                data: Array(dates.length).fill(300), // Gold line at 300s
+                                backgroundColor: 'rgba(255, 215, 0, 0.5)', // Gold color
+                                borderColor: 'rgba(255, 215, 0, 1)',
+                                borderWidth: 2,
+                                type: 'line',
+                                fill: false,
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#fff'
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#fff'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching the data: ', error));
+    </script>
 </body>
 </html>
