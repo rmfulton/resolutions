@@ -1,13 +1,13 @@
-// Google Sheets CSV link for Mile Times
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs/pub?output=csv&sheet=MileTimes';
+// Google Sheets CSV link for Fourier Page Progress
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTdZ_6JVmclMJmua6_fQE6NVStUITYcHChhDbkLfu9D7c_dSochTIq9_5kTSl8gZ4kwvm7zMxvAAuEs/pub?output=csv&sheet=FourierAnalysisProgress';
 
-// Fallback fake data for Mile Times
+// Fallback fake data for Fourier Page Progress
 const fakeData = [
-    { Date: '2025-01-10', time_seconds: 320 },
-    { Date: '2025-01-11', time_seconds: 330 },
-    { Date: '2025-01-12', time_seconds: 310 },
-    { Date: '2025-01-13', time_seconds: 290 },
-    { Date: '2025-01-14', time_seconds: 305 }
+    { Date: '2025-01-10', pages: 50 },
+    { Date: '2025-01-11', pages: 60 },
+    { Date: '2025-01-12', pages: 70 },
+    { Date: '2025-01-13', pages: 74 },
+    { Date: '2025-01-14', pages: 79 }
 ];
 
 // Fetch the CSV file using PapaParse
@@ -20,24 +20,24 @@ Papa.parse(sheetURL, {
         const data = results.data.length > 0 ? results.data : fakeData;
         
         const dates = [];
-        const times = [];
+        const pages = [];
 
         // Extract dates and times from the data
         data.forEach(row => {
             dates.push(row.Date);
-            times.push(row['Time (seconds)']);
+            pages.push(row['Pages read']);
         });
 
         // Create the line chart
-        const ctx = document.getElementById('mileChart').getContext('2d');
-        const mileChart = new Chart(ctx, {
+        const ctx = document.getElementById('fourierChart').getContext('2d');
+        const fourierChart = new Chart(ctx, {
             type: 'line', // Line chart type
             data: {
                 labels: dates, // Dates as labels
                 datasets: [
                     {
-                        label: 'Mile Time (Seconds)',
-                        data: times,
+                        label: 'Pages Read',
+                        data: pages,
                         backgroundColor: 'rgba(0, 123, 255, 0.7)', // Blue line color
                         borderColor: 'rgba(0, 123, 255, 1)', // Blue line border
                         borderWidth: 2,
@@ -45,8 +45,8 @@ Papa.parse(sheetURL, {
                         tension: 0.1 // Line smoothing
                     },
                     {
-                        label: 'Target Goal (300s)',
-                        data: Array(dates.length).fill(300), // Gold line at 300s
+                        label: 'Target Goal (280)',
+                        data: Array(dates.length).fill(280), // Gold line at 280
                         backgroundColor: 'rgba(255, 215, 0, 0.5)', // Gold color
                         borderColor: 'rgba(255, 215, 0, 1)',
                         borderWidth: 2,
@@ -91,18 +91,18 @@ Papa.parse(sheetURL, {
         console.error('Error fetching the CSV: ', error);
         // Use fake data if fetch fails
         const dates = fakeData.map(row => row.Date);
-        const times = fakeData.map(row => row.pages);
+        const pages = fakeData.map(row => row.pages);
 
         // Create the line chart with fake data
-        const ctx = document.getElementById('mileChart').getContext('2d');
-        const mileChart = new Chart(ctx, {
+        const ctx = document.getElementById('fourierChart').getContext('2d');
+        const fourierChart = new Chart(ctx, {
             type: 'line', // Line chart type
             data: {
                 labels: dates,
                 datasets: [
                     {
-                        label: 'Mile Time (Seconds)',
-                        data: times,
+                        label: 'Pages Read',
+                        data: pages,
                         backgroundColor: 'rgba(0, 123, 255, 0.7)', // Blue line color
                         borderColor: 'rgba(0, 123, 255, 1)', // Blue line border
                         borderWidth: 2,
@@ -110,8 +110,8 @@ Papa.parse(sheetURL, {
                         tension: 0.1 // Line smoothing
                     },
                     {
-                        label: 'Target Goal (300s)',
-                        data: Array(dates.length).fill(300), // Gold line at 300s
+                        label: 'Target Goal (280)',
+                        data: Array(dates.length).fill(280), // Gold line at 280 pages
                         backgroundColor: 'rgba(255, 215, 0, 0.5)', // Gold color
                         borderColor: 'rgba(255, 215, 0, 1)',
                         borderWidth: 2,
