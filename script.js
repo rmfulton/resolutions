@@ -60,7 +60,7 @@ Papa.parse(sheetURL, {
                 responsive: true,
                 scales: {
                     y: {
-                        beginAtZero: true,
+                        beginAtZero: false,
                         ticks: {
                             color: '#fff'
                         },
@@ -125,7 +125,7 @@ Papa.parse(sheetURL, {
                 responsive: true,
                 scales: {
                     y: {
-                        beginAtZero: true,
+                        beginAtZero: false,
                         ticks: {
                             color: '#fff'
                         },
